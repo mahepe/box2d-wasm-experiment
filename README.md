@@ -3,7 +3,7 @@
 What you have here is a mixture of [this
 repo](https://github.com/redblobgames/helloworld-sdl2-opengl-emscripten) and
 [this gist](https://gist.github.com/armornick/3434362). This repo strives to
-provide the intended functionality with minimal extra hassle to provide an easy
+provide the intended functionality with minimal extra hassle to serve as an easy
 starting point for you to hack on.
 
 (**A small bonus**: We use smart pointers, so you'll also get a working example
