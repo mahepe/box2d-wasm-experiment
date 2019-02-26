@@ -11,7 +11,7 @@ for interfacing them with SDL.)
 
 ## Build and run
 
-Build:
+Build on OSX (instructions for other platforms welcome):
 ```bash
 brew install SDL2 SDL2_image emscripten
 
