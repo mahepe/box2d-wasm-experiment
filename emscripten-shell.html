@@ -21,10 +21,8 @@
           overflow: hidden;
       }
       #canvas {
-          -webkit-flex: 1;
-          flex: 1;
-          width: 100%;
-          min-height: 10%;
+          width: 800px;
+          height: 600px;
       }
       #status {
           background-color: hsl(60,20%,90%);
@@ -44,11 +42,11 @@
   </head>
   <body>
     <div id="status">Downloading...</div>
-    
+
     <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 
     <textarea id="output" rows="8"></textarea>
-    
+
     <script type='text/javascript'>
       var Module = {
           print: (function(text) {

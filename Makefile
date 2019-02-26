@@ -8,7 +8,7 @@
 # For emscripten builds, $(WWWDIR)/ is needed
 
 MODULES = main
-ASSETS = assets/red-blob.png
+ASSETS = assets/sprite.png
 
 UNAME = $(shell uname -s)
 BUILDDIR = build
