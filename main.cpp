@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <memory>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+
+// If the build target is web, include emscripten
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -9,14 +12,29 @@
 #define HEIGHT 600
 #define IMG_PATH "assets/sprite.png"
 
-SDL_Window *win = NULL;
-SDL_Renderer *renderer = NULL;
-SDL_Texture *img = NULL;
-SDL_Rect *texr = NULL;
+// This interfaces the smart pointers with SDL's destruction methods.
+struct Deleter {
+    inline void operator()(SDL_Window* window) {
+        SDL_DestroyWindow(window);
+    }
+
+   inline void operator()(SDL_Texture* texture) {
+        SDL_DestroyTexture(texture);
+    }
+
+   inline void operator()(SDL_Renderer* renderer) {
+        SDL_DestroyRenderer(renderer);
+    }
+};
+
+// Smart pointers for our SDL things.
+std::unique_ptr<SDL_Window, Deleter> window;
+std::unique_ptr<SDL_Renderer, Deleter> renderer;
+std::unique_ptr<SDL_Texture, Deleter> texture;
+std::unique_ptr<SDL_Rect> texture_rect = std::unique_ptr<SDL_Rect>(new SDL_Rect());
 static bool run = true;
 
 void main_loop(){
-    // event handling
     SDL_Event e;
     if ( SDL_PollEvent(&e) ) {
       if (e.type == SDL_QUIT)
@@ -25,52 +43,40 @@ void main_loop(){
         run = false;
     }
 
-    // clear the screen
-    SDL_RenderClear(renderer);
-    // copy the texture to the rendering context
-    SDL_RenderCopy(renderer, img, NULL, texr);
-    // flip the backbuffer
-    // this means that everything that we prepared behind the screens is actually shown
-    SDL_RenderPresent(renderer);
+    // Clear, render sprite and swap buffers.
+    SDL_RenderClear(renderer.get());
+    SDL_RenderCopy(renderer.get(), texture.get(), NULL, texture_rect.get());
+    SDL_RenderPresent(renderer.get());
 }
 
 int main (int argc, char *argv[]) {
 
-  int w, h; // texture width & height
+  int w, h; // These will hold the sprite dimensions.
 
-  // Initialize SDL.
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
     return 1;
 
-  // create the window and renderer
-  // note that the renderer is accelerated
-  win = SDL_CreateWindow("Image Loading", 100, 100, WIDTH, HEIGHT, 0);
-  renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+  // Create the window, renderer, and load the sprite.
+  window = std::unique_ptr<SDL_Window, Deleter>(SDL_CreateWindow("Image Loading", 100, 100, WIDTH, HEIGHT, 0));
+  renderer = std::unique_ptr<SDL_Renderer, Deleter>(SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED));
+  texture = std::unique_ptr<SDL_Texture, Deleter>(IMG_LoadTexture(renderer.get(), IMG_PATH));
+  SDL_QueryTexture(texture.get(), NULL, NULL, &w, &h);
+  texture_rect->x = 0;
+  texture_rect->y = 0;
+  texture_rect->w = w;
+  texture_rect->h = h;
 
-  // load our image
-  img = IMG_LoadTexture(renderer, IMG_PATH);
-  SDL_QueryTexture(img, NULL, NULL, &w, &h); // get the width and height of the texture
-  // put the location where we want the texture to be drawn into a rectangle
-  // I'm also scaling the texture 2x simply by setting the width and height
-  texr = new SDL_Rect();
-  texr->x = 0;
-  texr->y = 0;
-  texr->w = w;
-  texr->h = h;
-
+// If the build target is web, hand the main loop over to emscripten...
 #ifdef __EMSCRIPTEN__
-  // 0 fps means to use requestAnimationFrame; non-0 means to use setTimeout.
   emscripten_set_main_loop(main_loop, 0, 1);
+// ...otherwise just run it here
 #else
-  // main loop
   while (run) {
     main_loop();
   }
 #endif
 
-  SDL_DestroyTexture(img);
-  SDL_DestroyRenderer(renderer);
-  SDL_DestroyWindow(win);
+  // Notice the lack of cleanup code as we use smart pointers. :)
 
   return 0;
 }
