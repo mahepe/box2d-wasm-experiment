@@ -11,25 +11,28 @@ for interfacing them with SDL.)
 
 ## Build and run
 
+### Install deps
+
 Build on OSX (instructions for other platforms welcome PRs):
 ```bash
 brew install SDL2 SDL2_image emscripten
+```
 
-# To build the native binaries
+### Build and run native binaries
+
+```
+cd build
+cmake ..
 make
-
-# To build for web
-make www
+./main
 ```
 
-Run the native binaries:
-```
-bin/main
-```
+### Build and run WASM
 
-Run WASM:
 ```
 cd www
+emcmake cmake ..
+emmake make
 python -m http.server 8000
-```
+``` 
 Then visit http://localhost:8000
