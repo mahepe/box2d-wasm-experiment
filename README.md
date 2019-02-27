@@ -36,3 +36,10 @@ emmake make
 python -m http.server 8000
 ``` 
 Then visit http://localhost:8000
+
+## Including a library
+
+1. Put the includes to `./include`
+2. Put the library compiled with a native compiler  to `./lib/native`
+3. Put the library compiled with emscripten to `./lib/web`
+4. Modify `CMakeLists.txt` (There is a commented out example how to include Box2D.)

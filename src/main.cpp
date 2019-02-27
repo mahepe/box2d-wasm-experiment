@@ -50,7 +50,6 @@ void main_loop(){
 }
 
 int main (int argc, char *argv[]) {
-
   int w, h; // These will hold the sprite dimensions.
 
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
