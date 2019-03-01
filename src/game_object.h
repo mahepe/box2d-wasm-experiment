@@ -7,7 +7,12 @@
 #include "const.h"
 #include "deleter.h"
 #include "event_data.h"
+#include "utils.h"
 
+/*
+ * This base class represents any physical object in
+ * the game world.
+ */
 class GameObject {
 public:
   std::unique_ptr<b2Body, Deleter> body;
@@ -20,13 +25,13 @@ public:
     this->texture_rect = rect_for_texture(texture);
   }
 
-  void render(SDL_Renderer *renderer, b2Vec2 camera_position,
+  void render(SDL_Interface *interface, b2Vec2 camera_position,
               std::vector<int> screen_size) {
     std::vector<int> tmp = world_to_screen(
         this->body->GetPosition(), camera_position, PX_PER_UNIT, screen_size);
     this->texture_rect->x = tmp.at(0);
     this->texture_rect->y = tmp.at(1);
-    SDL_RenderCopy(renderer, this->texture.get(), NULL,
+    SDL_RenderCopy(interface->renderer.get(), this->texture.get(), NULL,
                    this->texture_rect.get());
   }
 
@@ -43,7 +48,9 @@ public:
     return std::unique_ptr<SDL_Rect>(rect);
   }
 
+  // Overload this to provide a subclass-specific event handler.
   virtual void handle_event(EventData *event_data) {}
+
   static std::vector<int> world_to_screen(b2Vec2 x, b2Vec2 camera_x,
                                           int px_per_unit,
                                           std::vector<int> screen_size) {
@@ -54,6 +61,9 @@ public:
   }
 };
 
+/*
+ * This class represents the player.
+ */
 class Player : public GameObject {
 public:
   Player(SDL_Texture *texture, b2Body *body) : GameObject(texture, body) {}
