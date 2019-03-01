@@ -23,7 +23,7 @@ static bool run = true;
 std::unique_ptr<b2World> world;
 
 Clock timer;
-std::unique_ptr<SDL_interface> interface;
+std::unique_ptr<SDL_Interface> interface;
 GameState *game_state;
 
 void main_loop() {
@@ -42,8 +42,7 @@ void main_loop() {
 
   SDL_RenderClear(interface->renderer.get());
   for (auto const &o : game_state->objects) {
-    o->render(interface->renderer.get(), game_state->camera->GetPosition(),
-              screen_size);
+    o->render(interface.get(), game_state->camera->GetPosition(), screen_size);
   }
   SDL_RenderPresent(interface->renderer.get());
 }
@@ -53,7 +52,7 @@ int main(int argc, char *argv[]) {
   if (SDL_Init(SDL_INIT_VIDEO) < 0)
     return 1;
 
-  interface = std::unique_ptr<SDL_interface>(new SDL_interface);
+  interface = std::unique_ptr<SDL_Interface>(new SDL_Interface);
   interface->window = std::unique_ptr<SDL_Window, Deleter>(SDL_CreateWindow(
       "Image Loading", 100, 100, screen_size.at(0), screen_size.at(1), 0));
   interface->renderer =

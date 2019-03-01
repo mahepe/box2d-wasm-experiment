@@ -5,7 +5,7 @@
 
 #include "deleter.h"
 
-struct SDL_interface {
+struct SDL_Interface {
   std::unique_ptr<SDL_Window, Deleter> window;
   std::unique_ptr<SDL_Renderer, Deleter> renderer;
 };

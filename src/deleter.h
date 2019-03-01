@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 
-// This interfaces the smart pointers with SDL's destruction methods.
+// This interfaces smart pointers with SDL's destruction methods.
 struct Deleter {
   inline void operator()(SDL_Window *window) { SDL_DestroyWindow(window); }
 
