@@ -1,0 +1,9 @@
+[submodule "include/Box2D"]
+	path = include/Box2D
+	url = git@github.com:erincatto/Box2D.git
+[submodule "lib/native/Box2D-cmake"]
+	path = lib/native/Box2D-cmake
+	url = git@github.com:mahepe/Box2D-cmake.git
+[submodule "lib/web/Box2D-cmake"]
+	path = lib/web/Box2D-cmake
+	url = git@github.com:mahepe/Box2D-cmake.git
