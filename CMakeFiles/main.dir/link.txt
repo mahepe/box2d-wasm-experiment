@@ -1,0 +1,1 @@
+em++  -s USE_SDL=2 -s USE_SDL_IMAGE=2   -std=c++11 -MMD -MP -Oz -s USE_SDL=2 --use-preload-plugins -s USE_SDL_IMAGE=2 -s WASM=1 --preload-file assets/sprite.png @CMakeFiles/main.dir/objects1.rsp  -o main.js @CMakeFiles/main.dir/linklibs.rsp

@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/Users/mahe/Projects/other/bounce-experiment/www",
+  "command": "em++   @CMakeFiles/main.dir/includes_CXX.rsp -s USE_SDL=2 -s USE_SDL_IMAGE=2   -std=c++11 -o CMakeFiles/main.dir/src/main.cpp.o -c /Users/mahe/Projects/other/bounce-experiment/src/main.cpp",
+  "file": "/Users/mahe/Projects/other/bounce-experiment/src/main.cpp"
+}
+]
