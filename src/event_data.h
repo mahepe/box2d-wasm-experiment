@@ -18,6 +18,13 @@ public:
         {SDLK_DOWN, std::vector<int>{0, -1}},
         {SDLK_LEFT, std::vector<int>{-1, 0}},
         {SDLK_RIGHT, std::vector<int>{1, 0}}};
-    return k_to_v[e.key.keysym.sym];
+
+    for (auto const &c : k_to_v) {
+      if (c.first == e.key.keysym.sym) {
+        return c.second;
+      }
+    }
+
+    return std::vector<int>{0, 0};
   }
 };

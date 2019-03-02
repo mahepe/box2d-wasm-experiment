@@ -22,7 +22,7 @@ public:
   GameObject(SDL_Texture *texture, b2Body *body) {
     this->texture = std::unique_ptr<SDL_Texture, Deleter>(texture);
     this->body = std::unique_ptr<b2Body, Deleter>(body);
-    this->texture_rect = rect_for_texture(texture);
+    this->texture_rect = std::unique_ptr<SDL_Rect>(rect_for_texture(texture));
   }
 
   void render(SDL_Interface *interface, b2Vec2 camera_position,
@@ -35,17 +35,17 @@ public:
                    this->texture_rect.get());
   }
 
-  std::unique_ptr<SDL_Rect> rect_for_texture(SDL_Texture *texture) {
-    SDL_Rect *rect = new SDL_Rect;
-
-    int w, h;
-    SDL_QueryTexture(texture, NULL, NULL, &w, &h);
-    rect->x = 0;
-    rect->y = 0;
-    rect->w = w;
-    rect->h = h;
-
-    return std::unique_ptr<SDL_Rect>(rect);
+  SDL_Rect *rect_for_texture(SDL_Texture *texture) {
+    b2AABB aabb;
+    aabb.lowerBound = b2Vec2(FLT_MAX, FLT_MAX);
+    aabb.upperBound = b2Vec2(-FLT_MAX, -FLT_MAX);
+    b2Fixture *fixture = this->body->GetFixtureList();
+    aabb.Combine(aabb, fixture->GetAABB(0));
+    auto l = aabb.lowerBound;
+    auto u = aabb.upperBound;
+    int w = (int)(PX_PER_UNIT * (u.x - l.x));
+    int h = (int)(PX_PER_UNIT * (u.y - l.y));
+    return new SDL_Rect{0, 0, w, h};
   }
 
   // Overload this to provide a subclass-specific event handler.
